@@ -317,3 +317,175 @@ app.use((req, res) => {
 //   }
 //   console.log("Running app on this address:http://127.0.0.1:3000");
 // });
+// const PORT = 3000;
+
+// // Middleware
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+
+// // Serve HTML and CSS from public folder
+// app.use(express.static(path.join(__dirname, "public")));
+
+// // Create files folder
+// const filesDir = path.join(__dirname, "files");
+// fs.mkdirSync(filesDir, { recursive: true });
+
+// // Logger middleware
+// const fileLogger = (req, res, next) => {
+//     app.use(fileLogger);
+//     console.log(
+//         `Method: ${req.method} | URL: ${req.url} | Time: ${new Date().toISOString()}`
+//     );
+//     next();
+// };
+
+// app.use(logger);
+
+// // Homepage
+// app.get("/", (req, res) => {
+//     res.sendFile(path.join(__dirname, "public", "index.html"));
+// });
+
+// // Example token authentication middleware
+// const checkToken = (req, res, next) => {
+//     const token = req.header("token");
+
+//     if (token === "my-secret-token") {
+//         return next();
+//     }
+
+//     return res.status(401).json({
+//         error: "Missing or invalid token"
+//     });
+// };
+
+// // Protected test route
+// app.get("/protected", checkToken, (req, res) => {
+//     res.json({ message: "Token verified successfully!" });
+// });
+
+// // Helper function to validate filenames
+// const getFilePath = (filename) => {
+//     if (
+//         typeof filename !== "string" ||
+//         filename.trim() === "" ||
+//         filename !== path.basename(filename) ||
+//         filename.includes("\\") ||
+//         filename.includes("/")
+//     ) {
+//         return null;
+//     }
+
+//     return path.join(filesDir, filename);
+// };
+
+// // WRITE FILE: POST /write?fname=abc.txt
+// app.post("/write", (req, res) => {
+//     const filepath = getFilePath(req.query.fname);
+//     const content = req.body.content ?? req.query.content;
+
+//     if (!filepath) {
+//         return res.status(400).send("Please provide a valid filename.");
+//     }
+
+//     if (typeof content !== "string" || content.length === 0) {
+//         return res.status(400).send("Please provide file content.");
+//     }
+
+//     fs.writeFile(
+//         filepath,
+//         content,
+//         { encoding: "utf8", flag: "wx" },
+//         (error) => {
+//             if (error) {
+//                 if (error.code === "EEXIST") {
+//                     return res.status(409).send("File already exists!");
+//                 }
+
+//                 return res.status(500).send("Unable to write file.");
+//             }
+
+//             res.status(201).send("File written successfully!");
+//         }
+//     );
+// });
+
+// // READ FILE: GET /read?fname=abc.txt
+// app.get("/read", (req, res) => {
+//     const filepath = getFilePath(req.query.fname);
+
+//     if (!filepath) {
+//         return res.status(400).send("Please provide a valid filename.");
+//     }
+
+//     fs.readFile(filepath, "utf8", (error, data) => {
+//         if (error) {
+//             if (error.code === "ENOENT") {
+//                 return res.status(404).json({
+//                     error: "File not found!"
+//                 });
+//             }
+
+//             return res.status(500).send("Unable to read file.");
+//         }
+
+//         res.type("text/plain").send(data);
+//     });
+// });
+
+// // APPEND CONTENT: PUT /append?fname=abc.txt
+// app.put("/append", (req, res) => {
+//     const filepath = getFilePath(req.query.fname);
+//     const content = req.body.content ?? req.query.content;
+
+//     if (!filepath) {
+//         return res.status(400).send("Please provide a valid filename.");
+//     }
+
+//     if (typeof content !== "string" || content.length === 0) {
+//         return res.status(400).send("Please provide content to append.");
+//     }
+
+//     fs.appendFile(filepath, content, "utf8", (error) => {
+//         if (error) {
+//             if (error.code === "ENOENT") {
+//                 return res.status(404).send("File not found.");
+//             }
+
+//             return res.status(500).send("Unable to append content.");
+//         }
+
+//         res.send("File updated successfully!");
+//     });
+// });
+
+// // DELETE FILE: DELETE /delete?fname=abc.txt
+// app.delete("/delete", (req, res) => {
+//     const filepath = getFilePath(req.query.fname);
+
+//     if (!filepath) {
+//         return res.status(400).send("Please provide a valid filename.");
+//     }
+
+//     fs.unlink(filepath, (error) => {
+//         if (error) {
+//             if (error.code === "ENOENT") {
+//                 return res.status(404).send("File not found.");
+//             }
+
+//             return res.status(500).send("File not deleted.");
+//         }
+
+//         res.send("File deleted successfully!");
+//     });
+// });
+
+// // Handle unknown routes
+// app.use((req, res) => {
+//     res.status(404).send("404 - Page not found");
+// });
+
+// // Start server
+// app.listen(PORT, () => {
+//     console.log(`Running on http://localhost:${PORT}`);
+// });
